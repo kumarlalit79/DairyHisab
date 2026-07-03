@@ -1,6 +1,12 @@
 import React from "react";
 
-const RecentMilkEntries = () => {
+interface Props {
+  entries: any[];
+}
+
+export default function RecentMilkEntries({
+  entries
+}: Props){
   return (
     <div>
       <h2>Recent Milk Entries</h2>
@@ -17,19 +23,34 @@ const RecentMilkEntries = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Loading...</td>
+          {entries.length === 0 ? (
+            <tr>
 
-            <td>-</td>
+              <td colSpan={4}>
+                No Milk Entries
+              </td>
 
-            <td>-</td>
+            </tr>
 
-            <td>-</td>
-          </tr>
+          ) : (
+            entries.map((entry) => (
+              <tr key={entry._id}>
+                <td>
+                  {
+                    new Date(
+                      entry.date
+                    ).toLocaleDateString()
+                  }
+                </td>
+                <td>{entry.shift}</td>
+                <td>{entry.milkAmount}</td>
+                <td>{entry.bonus}</td>
+              </tr>
+            ))
+          )}
+        
         </tbody>
       </table>
     </div>
   );
 };
-
-export default RecentMilkEntries;

@@ -6,14 +6,6 @@ import { errorResponse, successResponse } from "@/utils/response";
 import { NextRequest } from "next/server";
 import { DEDUCTION_TYPE } from "@/constants/enums";
 
-const VALID_TYPES = [
-  "ADVANCE",
-  "COW_FEED",
-  "MILK",
-  "GHEE",
-  "MEDICINE",
-  "OTHERS",
-];
 
 export async function POST(req: NextRequest) {
   try {
