@@ -29,7 +29,7 @@ const DashboardSummary = ({ dashboard }: DashboardSummaryProps) => {
   const cards = [
     {
       label: "Today's Milk",
-      value: `${dashboard?.today?.milkAmount ?? 0} L`,
+      value: formatCurrency(dashboard?.today?.milkAmount),
       meta: "Collected today",
       icon: Droplets,
       tone: "bg-blue-50 text-blue-700",
@@ -43,7 +43,7 @@ const DashboardSummary = ({ dashboard }: DashboardSummaryProps) => {
     },
     {
       label: "Current Settlement",
-      value: `${settlement?.milkAmount ?? 0} L`,
+      value: formatCurrency(settlement?.milkAmount),
       meta: `${formatCurrency(settlement?.bonus)} bonus`,
       icon: ReceiptText,
       tone: "bg-violet-50 text-violet-700",

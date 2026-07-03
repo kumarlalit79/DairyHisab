@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore'
 import { LockKeyhole, LogIn, Phone } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import Link from 'next/link'
 
 const LoginPage = () => {
 
@@ -80,9 +81,16 @@ const LoginPage = () => {
             </div>
           </Field>
 
-          <Button type="submit" loading={loading} disabled={loading} className="w-full">
+          <Button type="submit" loading={loading} disabled={loading} className="w-full mt-2">
             {loading ? "Logging in" : "Login"}
           </Button>
+
+          <p className="mt-6 text-center text-sm text-[var(--text-secondary)]">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="font-semibold text-[var(--primary)] hover:underline">
+              Register here
+            </Link>
+          </p>
         </form>
       </Card>
     </PageShell>

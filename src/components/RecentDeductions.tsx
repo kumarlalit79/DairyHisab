@@ -6,8 +6,12 @@ import {
   formatCurrency,
   formatDate,
 } from "@/components/ui";
-import { Plus } from "lucide-react";
+import { Edit2, Plus, Trash2 } from "lucide-react";
 import React from "react";
+import Link from "next/link";
+import { useDeductionStore } from "@/store/deductionStore";
+import { useDashboardStore } from "@/store/dashboardStore";
+import toast from "react-hot-toast";
 
 interface Props {
   deductions: Array<{
@@ -21,16 +25,36 @@ interface Props {
 
 
 const RecentDeductions = ({ deductions }: Props) => {
+  const { remove } = useDeductionStore();
+  const { fetchDashboard } = useDashboardStore();
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this deduction?")) {
+      const success = await remove(id);
+      if (success) {
+        toast.success("Deduction deleted successfully.");
+        fetchDashboard();
+      } else {
+        toast.error("Failed to delete deduction.");
+      }
+    }
+  };
+
   return (
     <Card className="overflow-hidden">
       <CardHeader
         title="Recent Deductions"
         description="Latest advances, feed, medicine, and other deductions."
         action={
-          <LinkButton href="/deductions/new" variant="secondary" className="min-h-10 px-3">
-            <Plus className="size-4" aria-hidden="true" />
-            Add
-          </LinkButton>
+          <div className="flex gap-2">
+            <LinkButton href="/deductions" variant="ghost" className="min-h-10 px-3">
+              View All
+            </LinkButton>
+            <LinkButton href="/deductions/new" variant="secondary" className="min-h-10 px-3">
+              <Plus className="size-4" aria-hidden="true" />
+              Add
+            </LinkButton>
+          </div>
         }
       />
 
@@ -51,6 +75,7 @@ const RecentDeductions = ({ deductions }: Props) => {
                 <th className="px-5 py-3 font-semibold">Type</th>
                 <th className="px-5 py-3 font-semibold">Amount</th>
                 <th className="px-5 py-3 font-semibold">Note</th>
+                <th className="px-5 py-3 font-semibold text-right">Actions</th>
               </tr>
             </thead>
 
@@ -73,6 +98,24 @@ const RecentDeductions = ({ deductions }: Props) => {
                   </td>
                   <td className="min-w-56 px-5 py-4 text-[var(--text-secondary)]">
                     {deduction.note || "-"}
+                  </td>
+                  <td className="whitespace-nowrap px-5 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/deductions/${deduction._id}/edit`}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                        title="Edit"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(deduction._id)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-[var(--danger)] focus:outline-none focus:ring-2 focus:ring-[var(--danger)]"
+                        title="Delete"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
