@@ -1,6 +1,17 @@
 "use client";
 
+import {
+  Alert,
+  Button,
+  Card,
+  CardHeader,
+  Field,
+  PageHeader,
+  PageShell,
+  inputClassName,
+} from "@/components/ui";
 import { useDeductionStore } from "@/store/deductionStore";
+import { ArrowLeft, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -13,9 +24,12 @@ const AddDeductionPage = () => {
   const [type, setType] = useState("ADVANCE");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
+    setError("");
 
     const success = await create({
       date,
@@ -28,69 +42,93 @@ const AddDeductionPage = () => {
       router.replace("/dashboard");
       router.refresh();
     } else {
-      alert("Failed to add deduction.");
+      setError("Failed to add deduction. Please check the details and try again.");
     }
   }
 
   return (
-    <div>
-      <h2>Add Deduction</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Date</label>
-        <br />
-        <input
-          className="border"
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-        <br />
-        <br />
+    <PageShell className="max-w-3xl">
+      <PageHeader
+        eyebrow="Deduction"
+        title="Add Deduction"
+        description="Record advances, feed, medicine, milk, ghee, or other settlement deductions."
+        action={
+          <Button type="button" variant="secondary" onClick={() => router.back()}>
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            Back
+          </Button>
+        }
+      />
 
-        <label>Type</label>
-        <br />
-        <select
-          className="border"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="ADVANCE">Advance</option>
-          <option value="COW_FEED">Cow Feed</option>
-          <option value="MILK">Milk</option>
-          <option value="GHEE">Ghee</option>
-          <option value="MEDICINE">Medicine</option>
-          <option value="OTHERS">Others</option>
-        </select>
-        <br />
-        <br />
+      <Card className="overflow-hidden">
+        <CardHeader title="Deduction Details" description="This amount will reduce the expected payment." />
+        <form onSubmit={handleSubmit} className="space-y-5 p-5 sm:p-6">
+          {error ? <Alert title="Could not save">{error}</Alert> : null}
 
-        <label>Amount</label>
-        <br />
-        <input
-          className="border"
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-        <br />
-        <br />
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="Date">
+              <input
+                className={inputClassName}
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                disabled={loading}
+              />
+            </Field>
 
-        <label>Note</label>
-        <br />
-        <textarea
-          className="border"
-          rows={4}
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-        />
-        <br />
-        <br />
+            <Field label="Type">
+              <select
+                className={inputClassName}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                disabled={loading}
+              >
+                <option value="ADVANCE">Advance</option>
+                <option value="COW_FEED">Cow Feed</option>
+                <option value="MILK">Milk</option>
+                <option value="GHEE">Ghee</option>
+                <option value="MEDICINE">Medicine</option>
+                <option value="OTHERS">Others</option>
+              </select>
+            </Field>
+          </div>
 
-        <button className="border" type="submit" disabled={loading}>
-          {loading ? "Saving..." : "Save"}
-        </button>
-      </form>
-    </div>
+          <Field label="Amount" hint="Enter deduction amount in rupees.">
+            <input
+              className={inputClassName}
+              type="number"
+              min="0"
+              step="1"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0"
+              disabled={loading}
+            />
+          </Field>
+
+          <Field label="Note" hint="Optional context for this deduction.">
+            <textarea
+              className={`${inputClassName} min-h-32 resize-y`}
+              rows={4}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Add a short note"
+              disabled={loading}
+            />
+          </Field>
+
+          <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+            <Button type="button" variant="secondary" onClick={() => router.back()} disabled={loading}>
+              Cancel
+            </Button>
+            <Button type="submit" loading={loading} disabled={loading}>
+              {!loading ? <Save className="size-4" aria-hidden="true" /> : null}
+              {loading ? "Saving" : "Save Deduction"}
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </PageShell>
   );
 };
 

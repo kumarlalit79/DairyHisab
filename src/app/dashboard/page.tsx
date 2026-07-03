@@ -1,4 +1,5 @@
 "use client";
+import { Alert, DashboardSkeleton, PageHeader, PageShell } from "@/components/ui";
 import DashboardSummary from "@/components/DashboardSummary";
 import QuickActions from "@/components/QuickActions";
 import RecentDeductions from "@/components/RecentDeductions";
@@ -11,30 +12,43 @@ const DashboardPage = () => {
 
   useEffect(() => {
     fetchDashboard();
-  }, []);
+  }, [fetchDashboard]);
 
-  if (loading) return <h2>loading...</h2>;
-  if (!dashboard) return <h2>no data</h2>;
+  if (loading) return <DashboardSkeleton />;
+  if (!dashboard) {
+    return (
+      <PageShell>
+        <Alert title="Dashboard unavailable">
+          We could not load your dashboard data right now. Please refresh and try again.
+        </Alert>
+      </PageShell>
+    );
+  }
 
-  console.log("dashboard - ",dashboard)
+  const today = new Date().toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
-    <div>
-      <h1>DairyHisab Dashboard</h1>
-
+    <PageShell>
+      <PageHeader
+        eyebrow={today}
+        title="Good to see you."
+        description="A clean snapshot of today's milk, bonuses, deductions, and expected settlement payment."
+      />
       <DashboardSummary dashboard={dashboard} />
 
-      <hr />
-      <QuickActions />
-
-      <hr />
-
-      <RecentMilkEntries entries={dashboard.recentMilkEntries} />
-
-      <hr />
-
-      <RecentDeductions deductions={dashboard.recentDeductions} />
-    </div>
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]">
+        <div className="grid gap-6">
+          <RecentMilkEntries entries={dashboard.recentMilkEntries ?? []} />
+          <RecentDeductions deductions={dashboard.recentDeductions ?? []} />
+        </div>
+        <QuickActions />
+      </div>
+    </PageShell>
   );
 };
 
