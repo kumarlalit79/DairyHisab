@@ -24,7 +24,8 @@ const MilkEntryPage = () => {
     });
 
     if (success) {
-      router.push("/dashboard");
+      router.replace("/dashboard");
+      router.refresh()
     }
   }
 

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useDeductionStore } from "@/store/deductionStore";
 import { useRouter } from "next/navigation";
@@ -25,7 +25,8 @@ const AddDeductionPage = () => {
     });
 
     if (success) {
-      router.push("/dashboard");
+      router.replace("/dashboard");
+      router.refresh();
     } else {
       alert("Failed to add deduction.");
     }
@@ -38,7 +39,7 @@ const AddDeductionPage = () => {
         <label>Date</label>
         <br />
         <input
-        className="border"
+          className="border"
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
@@ -48,7 +49,11 @@ const AddDeductionPage = () => {
 
         <label>Type</label>
         <br />
-        <select className="border" value={type} onChange={(e) => setType(e.target.value)}>
+        <select
+          className="border"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+        >
           <option value="ADVANCE">Advance</option>
           <option value="COW_FEED">Cow Feed</option>
           <option value="MILK">Milk</option>
@@ -62,7 +67,7 @@ const AddDeductionPage = () => {
         <label>Amount</label>
         <br />
         <input
-        className="border"
+          className="border"
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
@@ -73,7 +78,7 @@ const AddDeductionPage = () => {
         <label>Note</label>
         <br />
         <textarea
-        className="border"
+          className="border"
           rows={4}
           value={note}
           onChange={(e) => setNote(e.target.value)}
