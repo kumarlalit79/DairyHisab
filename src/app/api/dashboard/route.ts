@@ -12,15 +12,22 @@ export async function GET() {
     const userId = await getUserId();
 
     const settlement = await getActiveSettlement(userId);
-
     if (!settlement) {
       return successResponse("Dashboard fetched successfully.", {
-        todayMilkAmount: 0,
-        todayBonus: 0,
-        totalMilkAmount: 0,
-        totalBonus: 0,
-        totalDeductions: 0,
-        expectedMilkPayment: 0,
+        today: {
+          milkAmount: 0,
+          bonus: 0,
+        },
+
+        currentSettlement: {
+          milkAmount: 0,
+          bonus: 0,
+          deductions: 0,
+          expectedMilkPayment: 0,
+        },
+
+        recentMilkEntries: [],
+        recentDeductions: [],
       });
     }
 
@@ -31,9 +38,17 @@ export async function GET() {
       settlementId: settlement._id,
     });
 
+    const recentMilkEntries = [...milkEntries]
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 5);
+
     const deductions = await Deduction.find({
       settlementId: settlement._id,
     });
+
+    const recentDeductions = [...deductions]
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 5);
 
     let todayMilkAmount = 0;
     let todayBonus = 0;
@@ -59,7 +74,7 @@ export async function GET() {
     for (const deduction of deductions) {
       totalDeductions += deduction.amount;
     }
-
+    console.log("NEW DASHBOARD API");
     return successResponse("Dashboard fetched successfully.", {
       today: {
         milkAmount: todayMilkAmount,
@@ -72,6 +87,8 @@ export async function GET() {
         deductions: totalDeductions,
         expectedMilkPayment: totalMilkAmount - totalDeductions,
       },
+      recentMilkEntries,
+      recentDeductions,
     });
   } catch (error) {
     console.error(error);

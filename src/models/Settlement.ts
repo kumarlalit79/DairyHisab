@@ -5,10 +5,6 @@ const SettlementSchema = new Schema({
     startDate: {type: Date, required: true, default: Date.now},
     endDate: {type: Date, default: null},
     status: {type: String, enum: ["ACTIVE", "COMPLETED"], default: "ACTIVE"},
-    // totalMilkAmount: {type: Number, default: 0, min: 0},
-    // totalBonus: {type: Number, default: 0, min: 0},
-    // totalDeductions: {type: Number, default: 0, min: 0},
-    // expectedMilkPayment: {type: Number, default: 0, min: 0},
     completedAt: {type: Date, default: null},   
 }, {timestamps: true})
 
