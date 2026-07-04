@@ -15,6 +15,8 @@ import { ArrowLeft, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
+const TODAY = new Date().toISOString().split("T")[0];
+
 const AddDeductionPage = () => {
   const router = useRouter();
 
@@ -30,6 +32,11 @@ const AddDeductionPage = () => {
     e.preventDefault();
     if (loading) return;
     setError("");
+
+    if (date > TODAY) {
+      setError("Future dates are not allowed.");
+      return;
+    }
 
     const success = await create({
       date,
@@ -71,6 +78,7 @@ const AddDeductionPage = () => {
                 className={inputClassName}
                 type="date"
                 value={date}
+                max={TODAY}
                 onChange={(e) => setDate(e.target.value)}
                 disabled={loading}
               />

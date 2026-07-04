@@ -16,6 +16,8 @@ import { ArrowLeft, Save } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+const TODAY = new Date().toISOString().split("T")[0];
+
 const EditDeductionPage = () => {
   const router = useRouter();
   const params = useParams();
@@ -120,6 +122,7 @@ const EditDeductionPage = () => {
                 className={inputClassName}
                 type="date"
                 value={date}
+                max={TODAY}
                 onChange={(e) => setDate(e.target.value)}
                 disabled={loading}
               />

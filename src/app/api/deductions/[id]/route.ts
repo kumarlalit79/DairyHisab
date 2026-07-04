@@ -34,6 +34,13 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       const entryDate = new Date(date);
       entryDate.setHours(0, 0, 0, 0);
 
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (entryDate > today) {
+        return errorResponse("Future dates are not allowed.", 400);
+      }
+
       updateData.date = entryDate;
     }
 

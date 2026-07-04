@@ -14,6 +14,16 @@ export async function POST(req: NextRequest) {
     const entryDate = new Date(date);
     entryDate.setHours(0, 0, 0, 0);
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (entryDate > today) {
+      return errorResponse(
+        "Future dates are not allowed.",
+        400
+      );
+    }
+
     if (!date || !shift || milkAmount == null || bonus == null) {
       return errorResponse("All fields are required.", 400);
     }

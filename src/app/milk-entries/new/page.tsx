@@ -14,6 +14,8 @@ import { ArrowLeft, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
+const TODAY = new Date().toISOString().split("T")[0];
+
 const MilkEntryPage = () => {
   const router = useRouter();
 
@@ -30,6 +32,11 @@ const MilkEntryPage = () => {
     if (loading) return;
     setError("");
 
+    if (date > TODAY) {
+      setError("Future dates are not allowed.");
+      return;
+    }
+
     const success = await create({
       date,
       shift,
@@ -39,7 +46,7 @@ const MilkEntryPage = () => {
 
     if (success) {
       router.replace("/dashboard");
-      router.refresh()
+      router.refresh();
     } else {
       setError("Failed to save milk entry. Please check the details and try again.");
     }
@@ -70,6 +77,7 @@ const MilkEntryPage = () => {
                 className={inputClassName}
                 type="date"
                 value={date}
+                max={TODAY}
                 onChange={(e) => setDate(e.target.value)}
                 disabled={loading}
               />

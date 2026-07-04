@@ -140,7 +140,7 @@ const RegisterPage = () => {
 
             <div className="sm:col-span-2">
               <Field 
-                label="Secretary Name (Optional)" 
+                label="Secretary Name" 
                 hint={errors.secretaryName?.message}
               >
                 <input

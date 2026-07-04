@@ -30,6 +30,16 @@ export async function POST(req: NextRequest) {
     const entryDate = new Date(date);
     entryDate.setHours(0, 0, 0, 0);
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (entryDate > today) {
+      return errorResponse(
+        "Future dates are not allowed.",
+        400
+      );
+    }
+
     const settlement = await getOrCreateSettlement(userId, entryDate);
 
     const deduction = await Deduction.create({

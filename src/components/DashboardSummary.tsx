@@ -42,14 +42,14 @@ const DashboardSummary = ({ dashboard }: DashboardSummaryProps) => {
       tone: "bg-[var(--primary-light)] text-[var(--primary)]",
     },
     {
-      label: "Current Settlement",
+      label: "Total Earnings",
       value: formatCurrency(settlement?.milkAmount),
       meta: `${formatCurrency(settlement?.bonus)} bonus`,
       icon: ReceiptText,
       tone: "bg-violet-50 text-violet-700",
     },
     {
-      label: "Expected Payment",
+      label: "Amount You'll Receive",
       value: formatCurrency(settlement?.expectedMilkPayment),
       meta: `${formatCurrency(settlement?.deductions)} deductions`,
       icon: WalletCards,
