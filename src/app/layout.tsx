@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "DairyHisab",
-  description: "Digital Dairy Ledger",
+  description: "Simple dairy record management for farmers",
 };
 
 export default function RootLayout({

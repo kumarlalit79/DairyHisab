@@ -53,10 +53,17 @@ export async function POST(req: NextRequest) {
 
     return successResponse("Milk entry added successfully.", entry, 201);
   } catch (error) {
-    if (error.code === 11000) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === 11000
+    ) {
       return errorResponse("Milk entry already exists for this shift.", 409);
     }
+
     console.error(error);
+
     return errorResponse("Internal Server Error", 500);
   }
 }

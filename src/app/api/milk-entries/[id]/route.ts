@@ -76,14 +76,19 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }
 
     return successResponse("Milk entry updated successfully.", entry);
-  } catch (error: any) {
-    if (error.code === 11000) {
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === 11000
+    ) {
       return errorResponse("Milk entry already exists for this shift.", 409);
     }
 
     console.error(error);
 
-    return errorResponse("Internal server error.", 500);
+    return errorResponse("Internal Server Error", 500);
   }
 }
 
