@@ -1,18 +1,29 @@
 "use client";
-import { Alert, DashboardSkeleton, PageHeader, PageShell } from "@/components/ui";
+import { Alert, Button, DashboardSkeleton, LinkButton, PageHeader, PageShell } from "@/components/ui";
 import DashboardSummary from "@/components/DashboardSummary";
 import QuickActions from "@/components/QuickActions";
 import RecentDeductions from "@/components/RecentDeductions";
 import RecentMilkEntries from "@/components/RecentMilkEntries";
 import { useDashboardStore } from "@/store/dashboardStore";
+import { useAuthStore } from "@/store/authStore";
+import { LogOut, UserCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 const DashboardPage = () => {
   const { dashboard, loading, fetchDashboard } = useDashboardStore();
+  const { user, fetchUser, logout } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     fetchDashboard();
-  }, [fetchDashboard]);
+    if (!user) fetchUser();
+  }, [fetchDashboard, fetchUser, user]);
+
+  async function handleLogout() {
+    await logout();
+    router.replace("/login");
+  }
 
   if (loading) return <DashboardSkeleton />;
   if (!dashboard) {
@@ -36,8 +47,25 @@ const DashboardPage = () => {
     <PageShell>
       <PageHeader
         eyebrow={today}
-        title="Good to see you."
+        title={`Good to see you${user?.name ? `, ${user.name.split(" ")[0]}` : ""}.`}
         description="A clean snapshot of today's milk, bonuses, deductions, and expected settlement payment."
+        action={
+          <div className="flex items-center gap-2">
+            <LinkButton href="/profile" variant="secondary" className="min-h-10 gap-1.5 px-3">
+              <UserCircle className="size-4" aria-hidden="true" />
+              Profile
+            </LinkButton>
+            <Button
+              type="button"
+              variant="secondary"
+              className="min-h-10 gap-1.5 px-3"
+              onClick={handleLogout}
+            >
+              <LogOut className="size-4" aria-hidden="true" />
+              Logout
+            </Button>
+          </div>
+        }
       />
       <DashboardSummary dashboard={dashboard} />
 
